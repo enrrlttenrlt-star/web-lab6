@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Зургийн цомог | Лаб 6</title>
+  <meta name="description" content="Лаб 6: CSS3 animation, transform, custom properties ба multimedia">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#gallery">Агуулга руу алгасах</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="logo">Цомог<span>.</span></a>
+
+      <div class="header-tools">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Харанхуй горим">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+            <circle class="sun" cx="12" cy="12" r="4.5"/>
+            <path class="rays" d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>
+            <path class="moon" d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+          </svg>
+        </button>
+
+        <button class="nav-toggle" type="button" aria-label="Цэс нээх" aria-expanded="false" aria-controls="menu">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+
+      <nav id="menu" class="nav" aria-label="Үндсэн цэс">
+        <ul>
+          <li><a href="#gallery">Галерей</a></li>
+          <li><a href="#video">Видео</a></li>
+          <li><a href="#map">Газрын зураг</a></li>
+          <li><a href="#about" class="btn btn-small">Тухай</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="hero-kicker">Зургийн цомог портал</p>
+          <h1>Монголын байгалийг зургаан зургаар үзье.</h1>
+          <p class="lead">Карт бүрийг эргүүлж, зургийн ард нуугдсан тайлбарыг уншаарай.</p>
+          <a href="#gallery" class="btn">Цомог үзэх</a>
+        </div>
+
+        <svg class="hero-art" viewBox="0 0 400 240" role="img" aria-labelledby="art-title art-desc">
+          <title id="art-title">Уулын дүрс</title>
+          <desc id="art-desc">Нар болон уулсын энгийн шугаман дүрслэл.</desc>
+          <circle class="art-sun" cx="290" cy="70" r="30"/>
+          <path class="art-line" pathLength="1" d="M10 210 L100 100 L150 160 L220 60 L300 170 L330 140 L390 210 Z"/>
+          <path class="art-line art-line-2" pathLength="1" d="M10 224 H390"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- GALLERY: бүх карт photo1.jpg-ийг ашиглана -->
+    <section id="gallery" class="section">
+      <div class="container">
+        <h2>Галерей</h2>
+        <p class="section-note">Карт бүр дээрх товчийг дарж эргүүлнэ. Товчийг Tab болон Enter-ээр ч ажиллуулж болно.</p>
+
+        <ul class="gallery">
+          <li class="flip" style="--i:0">
+            <div class="flip-inner">
+              <div class="face front">
+                <img src="img/photo1.jpg" alt="Монголын байгалийн зураг №1" width="900" height="675" loading="lazy">
+                <div class="face-bar"><h3>Зураг 1</h3>
+                  <button class="flip-btn" type="button" aria-pressed="false">Эргүүлэх</button></div>
+              </div>
+              <div class="face back" inert>
+                <h3>Зураг 1</h3>
+                <p>Энд зургийн тухай богино тайлбараа бичнэ.</p>
+                <button class="flip-btn" type="button" aria-pressed="true">Буцах</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="flip" style="--i:1">
+            <div class="flip-inner">
+              <div class="face front">
+                <img src="img/photo1.jpg" alt="Монголын байгалийн зураг №2" width="900" height="675" loading="lazy">
+                <div class="face-bar"><h3>Зураг 2</h3>
+                  <button class="flip-btn" type="button" aria-pressed="false">Эргүүлэх</button></div>
+              </div>
+              <div class="face back" inert>
+                <h3>Зураг 2</h3>
+                <p>Энд зургийн тухай богино тайлбараа бичнэ.</p>
+                <button class="flip-btn" type="button" aria-pressed="true">Буцах</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="flip" style="--i:2">
+            <div class="flip-inner">
+              <div class="face front">
+                <img src="img/photo1.jpg" alt="Монголын байгалийн зураг №3" width="900" height="675" loading="lazy">
+                <div class="face-bar"><h3>Зураг 3</h3>
+                  <button class="flip-btn" type="button" aria-pressed="false">Эргүүлэх</button></div>
+              </div>
+              <div class="face back" inert>
+                <h3>Зураг 3</h3>
+                <p>Энд зургийн тухай богино тайлбараа бичнэ.</p>
+                <button class="flip-btn" type="button" aria-pressed="true">Буцах</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="flip" style="--i:3">
+            <div class="flip-inner">
+              <div class="face front">
+                <img src="img/photo1.jpg" alt="Монголын байгалийн зураг №4" width="900" height="675" loading="lazy">
+                <div class="face-bar"><h3>Зураг 4</h3>
+                  <button class="flip-btn" type="button" aria-pressed="false">Эргүүлэх</button></div>
+              </div>
+              <div class="face back" inert>
+                <h3>Зураг 4</h3>
+                <p>Энд зургийн тухай богино тайлбараа бичнэ.</p>
+                <button class="flip-btn" type="button" aria-pressed="true">Буцах</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="flip" style="--i:4">
+            <div class="flip-inner">
+              <div class="face front">
+                <img src="img/photo1.jpg" alt="Монголын байгалийн зураг №5" width="900" height="675" loading="lazy">
+                <div class="face-bar"><h3>Зураг 5</h3>
+                  <button class="flip-btn" type="button" aria-pressed="false">Эргүүлэх</button></div>
+              </div>
+              <div class="face back" inert>
+                <h3>Зураг 5</h3>
+                <p>Энд зургийн тухай богино тайлбараа бичнэ.</p>
+                <button class="flip-btn" type="button" aria-pressed="true">Буцах</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="flip" style="--i:5">
+            <div class="flip-inner">
+              <div class="face front">
+                <img src="img/photo1.jpg" alt="Монголын байгалийн зураг №6" width="900" height="675" loading="lazy">
+                <div class="face-bar"><h3>Зураг 6</h3>
+                  <button class="flip-btn" type="button" aria-pressed="false">Эргүүлэх</button></div>
+              </div>
+              <div class="face back" inert>
+                <h3>Зураг 6</h3>
+                <p>Энд зургийн тухай богино тайлбараа бичнэ.</p>
+                <button class="flip-btn" type="button" aria-pressed="true">Буцах</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- VIDEO: зөвхөн clip.mp4 -->
+    <section id="video" class="section section-tint">
+      <div class="container">
+        <h2>Видео</h2>
+        <figure class="media">
+          <video controls preload="metadata" poster="img/poster.jpg" width="640" height="360">
+            <source src="video/clip.mp4" type="video/mp4">
+            <track kind="captions" src="video/clip.mn.vtt" srclang="mn" label="Монгол" default>
+            <p>Таны хөтөч видеог дэмжихгүй байна. <a href="video/clip.mp4">Видеог татаж авах</a>.</p>
+          </video>
+          <figcaption>Богино видео. Монгол хадмал орчуулгатай.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- IFRAME -->
+    <section id="map" class="section">
+      <div class="container">
+        <h2>Газрын зураг</h2>
+        <p class="section-note">Улаанбаатар хотын төв.</p>
+        <div class="map-wrap">
+          <iframe
+            title="Улаанбаатар хотын газрын зураг (OpenStreetMap)"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=106.86%2C47.89%2C106.96%2C47.94&amp;layer=mapnik"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section section-dark">
+      <div class="container about">
+        <h2>Тухай</h2>
+        <p class="lead">Энэ хуудас Лаб 4 (Grid галерей) болон Лаб 5 (Responsive)-ийн үргэлжлэл бөгөөд Лаб 6-ийн CSS3 animation, transform, custom properties болон multimedia-г ашигласан.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 Зургийн цомог. Лаб 6.</p>
+      <p>Хөдөлгөөн: <strong class="motion-note"></strong></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

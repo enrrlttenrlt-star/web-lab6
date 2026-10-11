@@ -1,0 +1,366 @@
+/* ==========================================================
+   Лаб 6: transition, transform, 3D flip, @keyframes,
+   custom properties (design token + dark mode), multimedia
+   ========================================================== */
+
+/* ---------- 1. Design token (Light) ---------- */
+:root {
+  /* өнгө */
+  --bg:        #f7f8fb;
+  --surface:   #ffffff;
+  --tint:      #eaeff8;
+  --text:      #14213d;
+  --muted:     #55607a;
+  --line:      #dfe4ef;
+  --accent:    #1f4e9c;
+  --accent-ink:#ffffff;   /* accent дээрх текст */
+  --gold:      #e9a820;
+  --red:       #c8372d;
+  --back-bg:   #14213d;   /* flip card-ын ар тал */
+  --back-text: #ffffff;
+  --band-bg:   #14213d;   /* харанхуй хэсэг */
+  --band-text: #ffffff;
+  --foot-bg:   #0d1629;
+
+  /* хэмжээ, сүүдэр */
+  --radius: 16px;
+  --header-h: 64px;
+  --shadow:    0 4px 14px rgba(20, 33, 61, .10);
+  --shadow-lg: 0 14px 34px rgba(20, 33, 61, .22);
+
+  /* хөдөлгөөн */
+  --dur-fast: .2s;
+  --dur: .7s;
+  --ease: cubic-bezier(.22, .8, .24, 1);
+  --stagger: 90ms;
+
+  /* фонт */
+  --font-head: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- Dark mode: хэрэглэгчийн сонголт ---------- */
+:root[data-theme="dark"] {
+  --bg:        #0e1424;
+  --surface:   #172036;
+  --tint:      #111a2e;
+  --text:      #e8ecf6;
+  --muted:     #a9b3cc;
+  --line:      #2a3555;
+  --accent:    #8fb2f2;
+  --accent-ink:#0e1424;
+  --back-bg:   #22305a;
+  --band-bg:   #070b16;
+  --foot-bg:   #05080f;
+  --shadow:    0 4px 14px rgba(0, 0, 0, .45);
+  --shadow-lg: 0 14px 34px rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}
+
+/* Dark mode: системийн тохиргоо (JS ачаалахаас өмнөх анхны зураглал) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0e1424; --surface: #172036; --tint: #111a2e;
+    --text: #e8ecf6; --muted: #a9b3cc; --line: #2a3555;
+    --accent: #8fb2f2; --accent-ink: #0e1424;
+    --back-bg: #22305a; --band-bg: #070b16; --foot-bg: #05080f;
+    --shadow: 0 4px 14px rgba(0,0,0,.45); --shadow-lg: 0 14px 34px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- 2. Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+  transition: background-color .3s, color .3s;
+}
+
+img, svg, video, iframe { max-width: 100%; display: block; }
+img, video { height: auto; }
+h1, h2, h3, p, li, a, figcaption { overflow-wrap: break-word; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.25; margin: 0 0 .6em; }
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.05rem; }
+p  { margin: 0 0 1em; }
+a  { color: var(--accent); }
+
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+.container { width: 100%; max-width: 1120px; margin-inline: auto; padding-inline: 20px; }
+.section { padding-block: 56px; }
+.section-tint { background: var(--tint); }
+.section-dark { background: var(--band-bg); color: var(--band-text); }
+.lead { font-size: 1.05rem; color: var(--muted); }
+.section-dark .lead { color: #c3cbe0; }
+.section-note { color: var(--muted); margin-bottom: 24px; }
+
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 100;
+  padding: 10px 16px; border-radius: 8px;
+  background: var(--gold); color: #14213d; font-weight: 800;
+  transition: top var(--dur-fast);
+}
+.skip-link:focus { top: 10px; }
+
+/* ---------- 3. Товч (transition + transform) ---------- */
+.btn {
+  display: inline-block;
+  padding: 12px 22px; min-height: 44px;
+  font: 700 .95rem var(--font-body);
+  text-decoration: none;
+  color: var(--accent-ink); background: var(--accent);
+  border: 2px solid var(--accent); border-radius: 999px;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast), filter var(--dur-fast);
+}
+/* hover болон focus-visible нэг төрлийн эффекттэй: гар, хулгана хоёуланд тэгш */
+.btn:hover, .btn:focus-visible { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.btn:active { transform: translateY(0) scale(.97); }
+.btn-small { padding: 8px 18px; min-height: 40px; }
+
+/* ---------- 4. Header ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  transition: background-color .3s;
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; gap: 8px; }
+.logo { font: 700 1.25rem var(--font-head); color: var(--text); text-decoration: none; margin-right: auto; }
+.logo span { color: var(--gold); }
+.header-tools { display: flex; align-items: center; gap: 4px; }
+
+.theme-toggle, .nav-toggle {
+  width: 44px; height: 44px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 0; border-radius: 50%;
+  color: var(--text); cursor: pointer;
+  transition: background-color var(--dur-fast), transform var(--dur-fast) var(--ease);
+}
+.theme-toggle:hover, .theme-toggle:focus-visible { background: var(--tint); transform: rotate(18deg); }
+
+/* Theme-ийн дүрс: light үед сар (dark руу), dark үед нар (light руу) */
+.theme-toggle svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .sun { fill: currentColor; }
+.theme-toggle .moon { fill: currentColor; }
+.theme-toggle .sun, .theme-toggle .rays { display: none; }
+:root[data-theme="dark"] .theme-toggle .sun,
+:root[data-theme="dark"] .theme-toggle .rays { display: block; }
+:root[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.nav-toggle { flex-direction: column; gap: 5px; padding: 10px; border-radius: 8px; }
+.nav-toggle .bar {
+  display: block; width: 100%; height: 3px; background: var(--text); border-radius: 2px;
+  transition: transform .25s var(--ease), opacity .25s;
+}
+.nav-toggle.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.nav-toggle.active .bar:nth-child(2) { opacity: 0; }
+.nav-toggle.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* ---------- 5. Hero + inline SVG animation ---------- */
+.hero { padding-block: 40px 56px; background: var(--surface); transition: background-color .3s; }
+.hero-grid { display: grid; gap: 32px; }
+.hero-kicker { font-weight: 800; color: var(--red); margin-bottom: .5em; }
+:root[data-theme="dark"] .hero-kicker { color: #ff8f84; }
+
+.hero-art { width: 100%; max-width: 440px; margin-inline: auto; }
+.art-sun { fill: var(--gold); transform-box: fill-box; transform-origin: center; animation: pulse 4s ease-in-out infinite; }
+.art-line {
+  fill: none; stroke: var(--accent); stroke-width: 4;
+  stroke-linejoin: round; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 0;           /* JS, animation байхгүй үед ч бүтэн харагдана */
+  animation: draw 1.8s var(--ease) .2s both;
+}
+.art-line-2 { animation-delay: 1.2s; stroke: var(--gold); }
+
+@keyframes draw  { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+/* ---------- 6. Gallery: 3D flip card + stagger ---------- */
+.gallery { display: grid; grid-template-columns: 1fr; gap: 22px; }
+
+.flip {
+  perspective: 1100px;                       /* 3D орон зай */
+  aspect-ratio: 4 / 3;
+  min-height: 250px;
+  /* stagger: --i бүрийн хоцрогдол нэмэгдэнэ */
+  animation: rise .7s var(--ease) both;
+  animation-delay: calc(var(--i) * var(--stagger));
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(28px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.flip-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;              /* хоёр талыг 3D-ээр хадгална */
+  transition: transform var(--dur) var(--ease);
+}
+.flip.is-flipped .flip-inner { transform: rotateY(180deg); }
+
+.face {
+  position: absolute; inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;               /* эргэсэн тал нуугдана */
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: box-shadow var(--dur-fast);
+}
+.flip:hover .face, .flip:focus-within .face { box-shadow: var(--shadow-lg); }
+
+.front { background: var(--surface); }
+.front img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .6s var(--ease);
+}
+.flip:hover .front img, .flip:focus-within .front img { transform: scale(1.07); }
+
+.face-bar {
+  position: absolute; inset: auto 0 0 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 36px 16px 14px;
+  background: linear-gradient(to top, rgba(8, 14, 30, .88), rgba(8, 14, 30, 0));
+  color: #fff;
+}
+.face-bar h3 { margin: 0; font-size: 1rem; }
+
+.back {
+  transform: rotateY(180deg);                /* ар тал нь урьдчилан эргэсэн */
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 6px;
+  padding: 20px;
+  background: var(--back-bg); color: var(--back-text);
+}
+.back h3 { margin-bottom: 0; color: var(--gold); }
+.back p { margin: 0 0 8px; font-size: .95rem; line-height: 1.5; }
+
+.flip-btn {
+  flex-shrink: 0;
+  min-height: 44px; padding: 8px 18px;
+  font: 700 .9rem var(--font-body);
+  color: #14213d; background: #fff;
+  border: 2px solid #fff; border-radius: 999px;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast), color var(--dur-fast);
+}
+.flip-btn:hover, .flip-btn:focus-visible { background: var(--gold); border-color: var(--gold); transform: translateY(-2px); }
+.flip-btn:active { transform: scale(.96); }
+
+/* ---------- 7. Video, iframe ---------- */
+.media { margin: 0; max-width: 760px; }
+.media video {
+  width: 100%; aspect-ratio: 16 / 9;
+  background: #000; border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.media figcaption { margin-top: 10px; color: var(--muted); font-size: .92rem; }
+
+.map-wrap {
+  aspect-ratio: 4 / 3; max-height: 460px;
+  border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.map-wrap iframe { width: 100%; height: 100%; border: 0; }
+
+/* ---------- 8. Footer ---------- */
+.site-footer { padding-block: 22px; font-size: .9rem; background: var(--foot-bg); color: #c3cbe0; }
+.footer-inner { display: flex; flex-direction: column; gap: 4px; }
+.footer-inner p { margin: 0; }
+.motion-note { color: var(--gold); }
+
+
+/* ==========================================================
+   MOBILE ЦЭС (max-width: 767px)
+   ========================================================== */
+@media (max-width: 767px) {
+  .nav {
+    position: absolute; top: var(--header-h); left: 0; right: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    max-height: 0; overflow: hidden; visibility: hidden;
+    transition: max-height .3s var(--ease), visibility .3s;
+  }
+  .nav.open { max-height: 420px; visibility: visible; }
+  .nav ul { padding: 8px 20px 20px; }
+  .nav li a:not(.btn) {
+    display: block; padding: 14px 0;
+    color: var(--text); text-decoration: none; font-weight: 700;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav .btn { display: block; margin-top: 14px; text-align: center; }
+}
+
+/* ==========================================================
+   TABLET (min-width: 768px)
+   ========================================================== */
+@media (min-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.7rem; }
+  .container { padding-inline: 32px; }
+  .section { padding-block: 72px; }
+
+  .nav-toggle { display: none; }
+  .nav { order: 2; }
+  .header-tools { order: 3; margin-left: 12px; }
+  .nav ul { display: flex; align-items: center; gap: 22px; }
+  .nav li a:not(.btn) { color: var(--text); text-decoration: none; font-weight: 700; transition: color var(--dur-fast); }
+  .nav li a:not(.btn):hover { color: var(--accent); }
+
+  .hero { padding-block: 64px 80px; }
+  .gallery { grid-template-columns: repeat(2, 1fr); gap: 26px; }
+  .footer-inner { flex-direction: row; justify-content: space-between; }
+}
+
+/* ==========================================================
+   DESKTOP (min-width: 1024px)
+   ========================================================== */
+@media (min-width: 1024px) {
+  h1 { font-size: 2.8rem; }
+  h2 { font-size: 2rem; }
+  .section { padding-block: 96px; }
+
+  .hero { padding-block: 88px 104px; }
+  .hero-grid { grid-template-columns: 1.1fr 1fr; align-items: center; gap: 64px; }
+  .gallery { grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .nav ul { gap: 36px; }
+}
+
+/* ==========================================================
+   prefers-reduced-motion: хөдөлгөөнийг хязгаарлана
+   - animation, transition бүгд маш богино болно
+   - 3D эргэлтийн оронд хоёр талыг бүдгэрүүлэн сольж харуулна
+   ========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  .flip { perspective: none; }
+  .flip-inner, .flip.is-flipped .flip-inner { transform-style: flat; transform: none; }
+  .face { backface-visibility: visible; -webkit-backface-visibility: visible; }
+  .back { transform: none; opacity: 0; visibility: hidden; }
+  .flip.is-flipped .front { opacity: 0; visibility: hidden; }
+  .flip.is-flipped .back  { opacity: 1; visibility: visible; }
+
+  .flip:hover .front img, .flip:focus-within .front img { transform: none; }
+  .btn:hover, .btn:focus-visible, .flip-btn:hover, .flip-btn:focus-visible,
+  .theme-toggle:hover, .theme-toggle:focus-visible { transform: none; }
+}
